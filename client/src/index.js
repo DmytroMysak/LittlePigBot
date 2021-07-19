@@ -8,6 +8,8 @@ const main = async () => {
   const channel = await connection.createChannel();
   logger.debug('Connected to RabbitMQ');
 
+  await channel.assertQueue(config.amqp.queueName,);
+
   const commandProcessor = new CommandProcessorService(channel);
   await commandProcessor.initialize();
 

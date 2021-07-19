@@ -3,7 +3,7 @@ Manage command from little pig bot
 
 ### Install
 ```sh
-npm i
+npm ci
 ```
 
 ### Start

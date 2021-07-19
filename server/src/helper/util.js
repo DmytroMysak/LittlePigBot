@@ -1,4 +1,5 @@
 const crypto = require('crypto');
+const mongodbUri = require('mongodb-uri');
 const config = require('../config');
 
 const createHash = (x) => crypto.createHash('sha256').update(x, 'utf8').digest('hex');
@@ -15,8 +16,17 @@ const getYoutubeId = (url) => {
   return (match && match[1]?.length === 11) ? match[1] : false;
 };
 
+const maskConnectionString = (uri) => {
+  const uriObject = mongodbUri.parse(uri);
+  if (uriObject.password) {
+    uriObject.password = '*****';
+  }
+  return mongodbUri.format(uriObject);
+};
+
 module.exports = {
   createFileName,
   createFileLink,
   getYoutubeId,
+  maskConnectionString,
 };

@@ -28,7 +28,7 @@ const main = async () => {
     clientService.initialize(),
   ]);
 
-  const appUrl = config.appUrl ? config.appUrl : (await createAppUrl());
+  const appUrl = config.appUrl ?? await createAppUrl();
   logger.debug(`App url: ${appUrl}`);
 
   const telegramBot = new TelegramBot(appUrl, config.port);
@@ -41,3 +41,11 @@ main()
     logger.error(error);
     process.exit(1);
   });
+
+// {
+//   _id: ObjectId('00000000000000000000000a'),
+//   type: 'public',
+//   accessKey: 'some-random-text',
+//   name: 'D&D\'s home pig',
+//   owner: ObjectId('60f5ae03cd0ebd51d7bab2cd')
+// }

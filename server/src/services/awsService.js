@@ -29,7 +29,7 @@ module.exports = {
     try {
       await Voice.insertMany(voices);
     } catch (error) {
-      logger.info('Voices already added to DB', error);
+      logger.info('Voices already added to DB');
     }
     logger.debug('Voice initialized');
   },

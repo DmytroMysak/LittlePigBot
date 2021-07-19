@@ -23,9 +23,9 @@ module.exports = {
     }
   },
 
-  translate: (label, currentLocale = 'en') => locales.get(currentLocale)[label] || label,
+  translate: (label, currentLocale = 'en') => locales.get(currentLocale)[label] ?? label,
 
-  translateAll: (label) => [...locales.keys()].map((key) => locales.get(key)[label] || label),
+  translateAll: (label) => [...locales.keys()].map((key) => locales.get(key)[label] ?? label),
 
   localeList: () => [...locales.keys()],
 };

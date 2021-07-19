@@ -1,5 +1,5 @@
 const { Markup } = require('telegraf');
-const User = require('../../models/users');
+const Client = require('../../models/client');
 const BaseCommand = require('./baseCommand');
 
 module.exports = class FindClientCommand extends BaseCommand {
@@ -16,7 +16,7 @@ module.exports = class FindClientCommand extends BaseCommand {
     if (!accessKey) {
       return this.sendResponseAndTranslate('find_private_pig_error');
     }
-    const client = (await User.findOne({ 'clients.accessKey': accessKey }))?.clients?.find((el) => el.accessKey === accessKey);
+    const client = await Client.findOne({ accessKey }).lean();
     if (!client) {
       return this.sendResponseAndTranslate('no_pig');
     }

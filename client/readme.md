@@ -15,7 +15,7 @@ sudo apt-get install ffmpeg
 ###Install
 install packages
 ```sh
-npm i
+npm сi
 ```
 Set up 2 env variables: AMQP_URL and SECRET_KEY
 

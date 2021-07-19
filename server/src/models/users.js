@@ -21,26 +21,6 @@ const settingSchema = new mongoose.Schema({
   virtual: true,
 });
 
-const clientSchema = new mongoose.Schema({
-  accessKey: {
-    type: String,
-    max: 100,
-  },
-  type: {
-    type: String,
-    enum: ['public', 'private'],
-  },
-  name: {
-    type: String,
-    max: 100,
-  },
-  addedBy: {
-    type: String,
-  },
-}, {
-  virtual: true,
-});
-
 const userSchema = new mongoose.Schema({
   telegramId: {
     type: String,
@@ -71,29 +51,19 @@ const userSchema = new mongoose.Schema({
     enum: ['admin', 'user'],
     default: 'user',
   },
-  clients: {
-    type: [clientSchema],
-    required: true,
-    default: () => ({
-      _id: mongoose.Types.ObjectId('00000000000000000000000a'),
-      type: 'public',
-      accessKey: 'some-random-text',
-      name: 'Dmytro\'s home pig',
-    }),
-  },
   selectedClients: {
     type: [{
       type: mongoose.Schema.Types.ObjectId,
       ref: 'clients',
     }],
-    default: mongoose.Types.ObjectId('00000000000000000000000a'),
+    default: [mongoose.Types.ObjectId('00000000000000000000000a')],
   },
 }, {
   timestamps: true,
   virtual: true,
 });
 
-[settingSchema, clientSchema, userSchema].forEach((schema) => {
+[settingSchema, userSchema].forEach((schema) => {
   schema.virtual('id').get(function () { // eslint-disable-line func-names
     return this._id.toString(); // eslint-disable-line no-underscore-dangle
   });

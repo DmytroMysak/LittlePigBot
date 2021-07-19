@@ -1,6 +1,7 @@
 const amqplib = require('amqplib');
 const logger = require('../helper/logger');
 const config = require('../config');
+const Client = require('../models/client');
 
 let channel;
 let telegramInstance;
@@ -36,8 +37,7 @@ module.exports = {
     telegramInstance = telegram;
   },
   sendToClients: async (object, user) => {
-    const clients = user.selectedClients
-      .map((clientId) => user.clients.find((el) => el.id.toString() === clientId.toString()));
+    const clients = await Client.find({ _id: { $in: user.selectedClients } }).lean();
 
     logger.debug(`Sending to clients: [${clients.map((cl) => cl.name).join(', ')}]`);
     logger.debug(object);

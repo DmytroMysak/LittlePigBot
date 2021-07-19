@@ -1,5 +1,6 @@
 const logger = require('../../helper/logger');
 const BaseCommand = require('./baseCommand');
+const Client = require('../../models/client');
 
 module.exports = class AddClientCommand extends BaseCommand {
   constructor() {
@@ -21,10 +22,10 @@ module.exports = class AddClientCommand extends BaseCommand {
       accessKey,
       type,
       name: name.replace(/-/gm, ' '),
-      addedBy: ctx.user.telegramId,
+      owner: ctx.user._id, // eslint-disable-line no-underscore-dangle
     };
     try {
-      await this.updateUser(ctx, { clients: [...ctx.user.clients, client] });
+      await Client.create(client);
     } catch (e) {
       logger.error(e);
       return this.sendResponseAndTranslate('add_new_pig_error');

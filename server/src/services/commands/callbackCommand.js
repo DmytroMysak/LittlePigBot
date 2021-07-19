@@ -1,6 +1,6 @@
 const _ = require('lodash');
 const { Markup } = require('telegraf');
-const User = require('../../models/users');
+const Client = require('../../models/client');
 const BaseCommand = require('./baseCommand');
 const SelectedStateCommand = require('./selectedStateCommand');
 const ChangeVoiceCommand = require('./changeVoiceCommand');
@@ -49,30 +49,24 @@ module.exports = class CallbackCommand extends BaseCommand {
 
   async updateClient(ctx) {
     const clientId = ctx.callbackQuery.data.replace(this.clientTogglePrefix, '');
-    const { clients } = ctx.user;
 
-    if (!ctx.user.clients.find((el) => el.id === clientId)) {
-      const client = (await User.findOne({ 'clients._id': clientId }).select('clients')).clients.find((el) => el.id === clientId);
-      if (!client) {
-        return this.sendResponseAndTranslate('not_found');
-      }
-      clients.push(client);
+    const client = await Client.exists({ _id: clientId });
+    if (!client) {
+      return this.sendResponseAndTranslate('not_found');
     }
     const selectedClients = ctx.user.selectedClients.includes(clientId)
       ? ctx.user.selectedClients.filter((id) => id !== clientId)
       : [...ctx.user.selectedClients, clientId];
 
-    await this.updateUser(ctx, { selectedClients, clients });
+    await this.updateUser(ctx, { selectedClients });
     return this.sendResponseAndTranslate('done');
   }
 
   async findPublicClient(ctx) {
-    const userAvailableClients = ctx.user.clients.map((client) => client.id);
-    const publicClients = (await User.find({ 'clients.type': 'public' }).select('clients'))
-      .flatMap((user) => user.toJSON()?.clients)
-      .filter((client) => client.type === 'public' && !userAvailableClients.includes(client.id))
+    const publicClients = (await Client.find({ type: 'public', _id: { $nin: ctx.user.selectedClients } }).lean())
       .sort((a, b) => b.name - a.name)
-      .map((client) => Markup.callbackButton(`${client.name} 💤`, `${this.clientTogglePrefix}${client.id}`));
+      // eslint-disable-next-line no-underscore-dangle
+      .map((client) => Markup.callbackButton(`${client.name} 💤`, `${this.clientTogglePrefix}${client._id}`));
 
     if (_.isEmpty(publicClients)) {
       return this.sendResponseAndTranslate('no_pigs');
