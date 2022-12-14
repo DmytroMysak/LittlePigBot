@@ -24,7 +24,7 @@
     "is-url": "^1.2.4",
     "lodash": "^4.17.21",
     "mongodb-uri": "^0.9.7",
-    "mongoose": "^5.12.10",
+    "mongoose": "^5.13.15",
     "pino": "^6.7.0",
     "pino-pretty": "^4.3.0",
     "telegraf": "^3.38.0"
